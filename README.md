@@ -1,12 +1,12 @@
 # Cross Platform Swift 6 Cyclic Redundancy Check (CRC) Library
 
 [![Swift](https://img.shields.io/badge/Swift-6.0-orange.svg)](https://swift.org)
-[![CI Status](https://github.com/maximilianalexander/cyclic-redundancy-check/actions/workflows/swift.yml/badge.svg)](https://github.com/maximilianalexander/cyclic-redundancy-check/actions/workflows/swift.yml)
-[![macOS](https://img.shields.io/badge/macOS-supported-success)](https://github.com/maximilianalexander/cyclic-redundancy-check)
-[![iOS](https://img.shields.io/badge/iOS-supported-success)](https://github.com/maximilianalexander/cyclic-redundancy-check)
-[![Linux](https://img.shields.io/badge/Linux-supported-success)](https://github.com/maximilianalexander/cyclic-redundancy-check)
-[![Windows](https://img.shields.io/badge/Windows-supported-success)](https://github.com/maximilianalexander/cyclic-redundancy-check)
-[![Android](https://img.shields.io/badge/Android-supported-success)](https://github.com/maximilianalexander/cyclic-redundancy-check)
+[![CI Status](https://github.com/apache-edge/cyclic-redundancy-check/actions/workflows/swift.yml/badge.svg)](https://github.com/apache-edge/cyclic-redundancy-check/actions/workflows/swift.yml)
+[![macOS](https://img.shields.io/badge/macOS-supported-success)](https://github.com/apache-edge/cyclic-redundancy-check)
+[![iOS](https://img.shields.io/badge/iOS-supported-success)](https://github.com/apache-edge/cyclic-redundancy-check)
+[![Linux](https://img.shields.io/badge/Linux-supported-success)](https://github.com/apache-edge/cyclic-redundancy-check)
+[![Windows](https://img.shields.io/badge/Windows-supported-success)](https://github.com/apache-edge/cyclic-redundancy-check)
+[![Android](https://img.shields.io/badge/Android-supported-success)](https://github.com/apache-edge/cyclic-redundancy-check)
 
 # Features
 
@@ -23,7 +23,7 @@ Add this package to your project using Swift Package Manager:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/maximilianalexander/cyclic-redundancy-check.git", from: "1.0.0")
+    .package(url: "https://github.com/apache-edge/cyclic-redundancy-check.git", from: "1.0.0")
 ]
 ```
 
