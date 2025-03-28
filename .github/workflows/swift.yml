@@ -20,7 +20,7 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Setup Swift
-      uses: swift-actions/setup-swift@v2
+      uses: redsun82/setup-swift@b2b6f77ab14f6a9b136b520dc53ec8eca27d2b99
       with:
         swift-version: ${{ matrix.swift }}
     
