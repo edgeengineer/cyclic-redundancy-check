@@ -78,6 +78,8 @@ let isValid = calculator.verify(data: data, against: UInt64(expectedCRC))
 print("CRC verification: \(isValid ? "Valid" : "Invalid")")
 ```
 
+For more details on how to use the library, see the tests in the `Tests` directory.
+
 # License
 
 Apache License 2.0
