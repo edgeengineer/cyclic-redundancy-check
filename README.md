@@ -36,36 +36,36 @@ import CyclicRedundancyCheck
 
 // One-shot CRC-32 calculation
 let data = "123456789".data(using: .utf8)!
-let crc32 = CRC32.calculate(data: data)
+let crc32 = CyclicRedundancyCheck.crc32(data: data)
 print("CRC-32: \(String(format: "0x%08X", crc32))") // Should output: 0xCBF43926
 
 // Using a predefined standard
-let crc16 = CRC16.CCITT.calculate(bytes: Array("Hello, world!".utf8))
-print("CRC-16-CCITT: \(String(format: "0x%04X", crc16))")
+let crc16 = CyclicRedundancyCheck.crc16(string: "Hello, world!")
+print("CRC-16: \(String(format: "0x%04X", crc16))")
 
 // Incremental calculation
-var calculator = CRC32()
-calculator.start()
+var calculator = CyclicRedundancyCheck(algorithm: .crc32)
+calculator.reset()
 calculator.update(with: "Hello, ".data(using: .utf8)!)
 calculator.update(with: "world!".data(using: .utf8)!)
-let result = calculator.final()
+let result = calculator.checksum
 ```
 
 ### Custom CRC Configuration
 
 ```swift
 // Creating a custom CRC algorithm
-let customConfig = CRCConfig(
+let customConfig = CyclicRedundancyCheckConfiguration(
     width: 16,
     polynomial: 0x8005,
     initialValue: 0xFFFF,
+    finalXORValue: 0x0000,
     reflectInput: true,
-    reflectOutput: true,
-    finalXOR: 0x0000
+    reflectOutput: true
 )
 
-let customCRC = CRC(config: customConfig)
-let result = customCRC.calculate(string: "Test data")
+var customCRC = CyclicRedundancyCheck(configuration: customConfig)
+let result = customCRC.compute(string: "Test data")
 ```
 
 ### Verification
@@ -73,7 +73,8 @@ let result = customCRC.calculate(string: "Test data")
 ```swift
 let data = "123456789".data(using: .utf8)!
 let expectedCRC: UInt32 = 0xCBF43926
-let isValid = CRC32.verify(data: data, against: expectedCRC)
+var calculator = CyclicRedundancyCheck(algorithm: .crc32)
+let isValid = calculator.verify(data: data, against: UInt64(expectedCRC))
 print("CRC verification: \(isValid ? "Valid" : "Invalid")")
 ```
 
