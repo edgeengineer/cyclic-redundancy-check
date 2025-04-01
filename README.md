@@ -23,7 +23,7 @@ Add this package to your project using Swift Package Manager:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/apache-edge/cyclic-redundancy-check.git", from: "1.0.0")
+    .package(url: "https://github.com/apache-edge/cyclic-redundancy-check.git", from: "0.0.1")
 ]
 ```
 
