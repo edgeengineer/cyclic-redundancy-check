@@ -1,25 +1,16 @@
 // CyclicRedundancyCheck
 // A comprehensive Swift library for cyclic redundancy check calculation across multiple platforms
 
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
-import Foundation
-#endif
-
 /// Represents a cyclic redundancy check algorithm configuration
-public struct CyclicRedundancyCheckConfiguration {
-    /// Width of the CRC polynomial in bits
-    public let width: Int
-    
+public struct CyclicRedundancyCheckConfiguration<Polynomial: FixedWidthInteger & Sendable>: Sendable {
     /// Polynomial used for CRC calculation
-    public let polynomial: UInt64
+    public let polynomial: Polynomial
     
     /// Initial value for the CRC calculation
-    public let initialValue: UInt64
+    public let initialValue: Polynomial
     
     /// Value to XOR with the final CRC result
-    public let finalXORValue: UInt64
+    public let finalXORValue: Polynomial
     
     /// Whether input bytes should be reflected (bit order reversed)
     public let reflectInput: Bool
@@ -28,14 +19,12 @@ public struct CyclicRedundancyCheckConfiguration {
     public let reflectOutput: Bool
     
     public init(
-        width: Int,
-        polynomial: UInt64,
-        initialValue: UInt64,
-        finalXORValue: UInt64,
+        polynomial: Polynomial,
+        initialValue: Polynomial,
+        finalXORValue: Polynomial,
         reflectInput: Bool,
         reflectOutput: Bool
     ) {
-        self.width = width
         self.polynomial = polynomial
         self.initialValue = initialValue
         self.finalXORValue = finalXORValue
@@ -45,183 +34,172 @@ public struct CyclicRedundancyCheckConfiguration {
 }
 
 /// Standard cyclic redundancy check algorithm configurations
-public enum StandardCyclicRedundancyCheckAlgorithm {
+public struct StandardCyclicRedundancyCheckAlgorithm<Polynomial: FixedWidthInteger & Sendable>: Sendable {
+    public let configuration: CyclicRedundancyCheckConfiguration<Polynomial>
+}
+
+public extension StandardCyclicRedundancyCheckAlgorithm<UInt8> {
     // CRC-8 variants
-    case crc8
-    case crc8CDMA2000
-    case crc8WCDMA
-    
-    // CRC-16 variants
-    case crc16
-    case crc16CCITT
-    case crc16XMODEM
-    case crc16IBM
-    case crc16MODBUS
-    
-    // CRC-32 variants
-    case crc32
-    case crc32BZIP2
-    case crc32MPEG2
-    case crc32POSIX
-    
+    static let crc8 = StandardCyclicRedundancyCheckAlgorithm(
+        configuration: CyclicRedundancyCheckConfiguration(
+            polynomial: 0x07,
+            initialValue: 0x00,
+            finalXORValue: 0x00,
+            reflectInput: false,
+            reflectOutput: false
+        )
+    )
+    static let crc8CDMA2000 = StandardCyclicRedundancyCheckAlgorithm(
+        configuration: CyclicRedundancyCheckConfiguration(
+            polynomial: 0x9B,
+            initialValue: 0xFF,
+            finalXORValue: 0x00,
+            reflectInput: false,
+            reflectOutput: false
+        )
+    )
+    static let crc8WCDMA = StandardCyclicRedundancyCheckAlgorithm(
+        configuration: CyclicRedundancyCheckConfiguration(
+            polynomial: 0x9B,
+            initialValue: 0x00,
+            finalXORValue: 0x00,
+            reflectInput: true,
+            reflectOutput: true
+        )
+    )
+}
+
+// CRC-16 variants
+public extension StandardCyclicRedundancyCheckAlgorithm<UInt16> {
+    static let crc16 = StandardCyclicRedundancyCheckAlgorithm(
+        configuration: CyclicRedundancyCheckConfiguration(
+            polynomial: 0x8005,
+            initialValue: 0x0000,
+            finalXORValue: 0x0000,
+            reflectInput: true,
+            reflectOutput: true
+        )
+    )
+    static let crc16CCITT = StandardCyclicRedundancyCheckAlgorithm(
+        configuration: CyclicRedundancyCheckConfiguration(
+            polynomial: 0x1021,
+            initialValue: 0xFFFF,
+            finalXORValue: 0x0000,
+            reflectInput: false,
+            reflectOutput: false
+        )
+    )
+    static let crc16XMODEM = StandardCyclicRedundancyCheckAlgorithm(
+        configuration: CyclicRedundancyCheckConfiguration(
+            polynomial: 0x1021,
+            initialValue: 0x0000,
+            finalXORValue: 0x0000,
+            reflectInput: false,
+            reflectOutput: false
+        )
+    )
+    static let crc16IBM = StandardCyclicRedundancyCheckAlgorithm(
+        configuration: CyclicRedundancyCheckConfiguration(
+            polynomial: 0x8005,
+            initialValue: 0x0000,
+            finalXORValue: 0x0000,
+            reflectInput: true,
+            reflectOutput: true
+        )
+    )
+    static let crc16MODBUS = StandardCyclicRedundancyCheckAlgorithm(
+        configuration: CyclicRedundancyCheckConfiguration(
+            polynomial: 0x8005,
+            initialValue: 0xFFFF,
+            finalXORValue: 0x0000,
+            reflectInput: true,
+            reflectOutput: true
+        )
+    )
+}
+
+// CRC-32 variants
+public extension StandardCyclicRedundancyCheckAlgorithm<UInt32> {
+    static let crc32 = StandardCyclicRedundancyCheckAlgorithm(
+        configuration: CyclicRedundancyCheckConfiguration(
+            polynomial: 0x04C11DB7,
+            initialValue: 0xFFFFFFFF,
+            finalXORValue: 0xFFFFFFFF,
+            reflectInput: true,
+            reflectOutput: true
+        )
+    )
+    static let crc32BZIP2 = StandardCyclicRedundancyCheckAlgorithm(
+        configuration: CyclicRedundancyCheckConfiguration(
+            polynomial: 0x04C11DB7,
+            initialValue: 0xFFFFFFFF,
+            finalXORValue: 0xFFFFFFFF,
+            reflectInput: false,
+            reflectOutput: false
+        )
+    )
+    static let crc32MPEG2 = StandardCyclicRedundancyCheckAlgorithm(
+        configuration: CyclicRedundancyCheckConfiguration(
+            polynomial: 0x04C11DB7,
+            initialValue: 0xFFFFFFFF,
+            finalXORValue: 0x00000000,
+            reflectInput: false,
+            reflectOutput: false
+        )
+    )
+    static let crc32POSIX = StandardCyclicRedundancyCheckAlgorithm(
+        configuration: CyclicRedundancyCheckConfiguration(
+            polynomial: 0x04C11DB7,
+            initialValue: 0x00000000,
+            finalXORValue: 0xFFFFFFFF,
+            reflectInput: false,
+            reflectOutput: false
+        )
+    )
+}
+
+public extension StandardCyclicRedundancyCheckAlgorithm<UInt64> {
     // CRC-64 variants
-    case crc64ISO
-    case crc64ECMA
-    
-    public var configuration: CyclicRedundancyCheckConfiguration {
-        switch self {
-        // CRC-8 variants
-        case .crc8:
-            return CyclicRedundancyCheckConfiguration(
-                width: 8,
-                polynomial: 0x07,
-                initialValue: 0x00,
-                finalXORValue: 0x00,
-                reflectInput: false,
-                reflectOutput: false
-            )
-        case .crc8CDMA2000:
-            return CyclicRedundancyCheckConfiguration(
-                width: 8,
-                polynomial: 0x9B,
-                initialValue: 0xFF,
-                finalXORValue: 0x00,
-                reflectInput: false,
-                reflectOutput: false
-            )
-        case .crc8WCDMA:
-            return CyclicRedundancyCheckConfiguration(
-                width: 8,
-                polynomial: 0x9B,
-                initialValue: 0x00,
-                finalXORValue: 0x00,
-                reflectInput: true,
-                reflectOutput: true
-            )
-            
-        // CRC-16 variants
-        case .crc16:
-            return CyclicRedundancyCheckConfiguration(
-                width: 16,
-                polynomial: 0x8005,
-                initialValue: 0x0000,
-                finalXORValue: 0x0000,
-                reflectInput: true,
-                reflectOutput: true
-            )
-        case .crc16CCITT:
-            return CyclicRedundancyCheckConfiguration(
-                width: 16,
-                polynomial: 0x1021,
-                initialValue: 0xFFFF,
-                finalXORValue: 0x0000,
-                reflectInput: false,
-                reflectOutput: false
-            )
-        case .crc16XMODEM:
-            return CyclicRedundancyCheckConfiguration(
-                width: 16,
-                polynomial: 0x1021,
-                initialValue: 0x0000,
-                finalXORValue: 0x0000,
-                reflectInput: false,
-                reflectOutput: false
-            )
-        case .crc16IBM:
-            return CyclicRedundancyCheckConfiguration(
-                width: 16,
-                polynomial: 0x8005,
-                initialValue: 0x0000,
-                finalXORValue: 0x0000,
-                reflectInput: true,
-                reflectOutput: true
-            )
-        case .crc16MODBUS:
-            return CyclicRedundancyCheckConfiguration(
-                width: 16,
-                polynomial: 0x8005,
-                initialValue: 0xFFFF,
-                finalXORValue: 0x0000,
-                reflectInput: true,
-                reflectOutput: true
-            )
-            
-        // CRC-32 variants
-        case .crc32:
-            return CyclicRedundancyCheckConfiguration(
-                width: 32,
-                polynomial: 0x04C11DB7,
-                initialValue: 0xFFFFFFFF,
-                finalXORValue: 0xFFFFFFFF,
-                reflectInput: true,
-                reflectOutput: true
-            )
-        case .crc32BZIP2:
-            return CyclicRedundancyCheckConfiguration(
-                width: 32,
-                polynomial: 0x04C11DB7,
-                initialValue: 0xFFFFFFFF,
-                finalXORValue: 0xFFFFFFFF,
-                reflectInput: false,
-                reflectOutput: false
-            )
-        case .crc32MPEG2:
-            return CyclicRedundancyCheckConfiguration(
-                width: 32,
-                polynomial: 0x04C11DB7,
-                initialValue: 0xFFFFFFFF,
-                finalXORValue: 0x00000000,
-                reflectInput: false,
-                reflectOutput: false
-            )
-        case .crc32POSIX:
-            return CyclicRedundancyCheckConfiguration(
-                width: 32,
-                polynomial: 0x04C11DB7,
-                initialValue: 0x00000000,
-                finalXORValue: 0xFFFFFFFF,
-                reflectInput: false,
-                reflectOutput: false
-            )
-            
-        // CRC-64 variants
-        case .crc64ISO:
-            return CyclicRedundancyCheckConfiguration(
-                width: 64,
-                polynomial: 0x000000000000001B,
-                initialValue: 0xFFFFFFFFFFFFFFFF,
-                finalXORValue: 0xFFFFFFFFFFFFFFFF,
-                reflectInput: true,
-                reflectOutput: true
-            )
-        case .crc64ECMA:
-            return CyclicRedundancyCheckConfiguration(
-                width: 64,
-                polynomial: 0x42F0E1EBA9EA3693,
-                initialValue: 0x0000000000000000,
-                finalXORValue: 0x0000000000000000,
-                reflectInput: false,
-                reflectOutput: false
-            )
-        }
-    }
+    static let crc64ISO = StandardCyclicRedundancyCheckAlgorithm(
+        configuration: CyclicRedundancyCheckConfiguration(
+            polynomial: 0x000000000000001B,
+            initialValue: 0xFFFFFFFFFFFFFFFF,
+            finalXORValue: 0xFFFFFFFFFFFFFFFF,
+            reflectInput: true,
+            reflectOutput: true
+        )
+    )
+    static let crc64ECMA = StandardCyclicRedundancyCheckAlgorithm<UInt64>(
+        configuration: CyclicRedundancyCheckConfiguration(
+            polynomial: 0x42F0E1EBA9EA3693,
+            initialValue: 0x0000000000000000,
+            finalXORValue: 0x0000000000000000,
+            reflectInput: false,
+            reflectOutput: false
+        )
+    )
 }
 
 /// Main cyclic redundancy check calculator struct
-public struct CyclicRedundancyCheck {
-    private let configuration: CyclicRedundancyCheckConfiguration
-    private let lookupTable: [UInt64]
-    private var currentValue: UInt64
+public struct CyclicRedundancyCheck<Polynomial: FixedWidthInteger & Sendable>: Sendable {
+    @usableFromInline
+    internal let configuration: CyclicRedundancyCheckConfiguration<Polynomial>
+    // TODO: Replace with InlineArray<256> down the line 
+    // https://github.com/swiftlang/swift-evolution/blob/main/proposals/0453-vector.md
+    @usableFromInline
+    internal let lookupTable: [Polynomial]
+    @usableFromInline
+    internal var currentValue: Polynomial
     
     /// Initialize a cyclic redundancy check calculator with a standard algorithm
-    public init(algorithm: StandardCyclicRedundancyCheckAlgorithm) {
+    public init(algorithm: StandardCyclicRedundancyCheckAlgorithm<Polynomial>) {
         self.configuration = algorithm.configuration
         self.lookupTable = CyclicRedundancyCheck.generateLookupTable(configuration: configuration)
         self.currentValue = configuration.initialValue
     }
     
     /// Initialize a cyclic redundancy check calculator with a custom configuration
-    public init(configuration: CyclicRedundancyCheckConfiguration) {
+    public init(configuration: CyclicRedundancyCheckConfiguration<Polynomial>) {
         self.configuration = configuration
         self.lookupTable = CyclicRedundancyCheck.generateLookupTable(configuration: configuration)
         self.currentValue = configuration.initialValue
@@ -231,144 +209,146 @@ public struct CyclicRedundancyCheck {
     public mutating func reset() {
         currentValue = configuration.initialValue
     }
-    
+
     /// Update the cyclic redundancy check with new data (incremental calculation)
-    public mutating func update(with data: Data) {
-        for byte in data {
-            update(with: byte)
+    @inlinable
+    @_specialize(where Polynomial == UInt8, Bytes == UnsafeRawBufferPointer)
+    @_specialize(where Polynomial == UInt16, Bytes == UnsafeRawBufferPointer)
+    @_specialize(where Polynomial == UInt32, Bytes == UnsafeRawBufferPointer)
+    @_specialize(where Polynomial == UInt64, Bytes == UnsafeRawBufferPointer)
+    public mutating func update<Bytes: Sequence>(with bytes: Bytes) where Bytes.Element == UInt8 {
+        if bytes.withContiguousStorageIfAvailable({ buffer in
+            _update(with: buffer)
+            return true
+        }) != true {
+            update_slowPath(with: bytes)
         }
     }
-    
-    /// Update the cyclic redundancy check with a byte array
-    public mutating func update(with bytes: [UInt8]) {
-        for byte in bytes {
-            update(with: byte)
-        }
+
+    @inline(never)
+    @usableFromInline
+    internal mutating func update_slowPath(with buffer: some Sequence<UInt8>) {
+        _update(with: buffer)
     }
-    
-    /// Update the cyclic redundancy check with a string (using UTF-8 encoding)
-    public mutating func update(with string: String) {
-        guard let data = string.data(using: .utf8) else { return }
-        update(with: data)
-    }
-    
-    /// Update the cyclic redundancy check with a single byte
-    private mutating func update(with byte: UInt8) {
-        let width = configuration.width
-        
-        if width <= 8 {
-            // For CRC-8
+
+    /// Update the cyclic redundancy check with new data (incremental calculation)
+    @inlinable
+    @_specialize(where Polynomial == UInt8, Bytes == UnsafeRawBufferPointer)
+    @_specialize(where Polynomial == UInt16, Bytes == UnsafeRawBufferPointer)
+    @_specialize(where Polynomial == UInt32, Bytes == UnsafeRawBufferPointer)
+    @_specialize(where Polynomial == UInt64, Bytes == UnsafeRawBufferPointer)
+    internal mutating func _update<Bytes: Sequence>(with buffer: Bytes) where Bytes.Element == UInt8 {
+        // We branch before the loop to avoid unnecessary reflection
+        // logic in the hot path
+        if Polynomial.self == UInt8.self {
             if configuration.reflectInput {
-                let index = Int(UInt8(truncatingIfNeeded: currentValue) ^ CyclicRedundancyCheck.reflect(byte: byte))
-                currentValue = lookupTable[index]
+                for byte in buffer {
+                    let index = UInt8(truncatingIfNeeded: currentValue) ^ CyclicRedundancyCheck<UInt8>.reflect(value: byte)
+                    currentValue = lookupTable[Int(index)]
+                }
             } else {
-                let index = Int(UInt8(truncatingIfNeeded: currentValue) ^ byte)
-                currentValue = lookupTable[index]
+                for byte in buffer {
+                    let index = UInt8(truncatingIfNeeded: currentValue) ^ byte
+                    currentValue = lookupTable[Int(index)]
+                }
             }
-        } else if width <= 16 {
-            // For CRC-16
-            if configuration.reflectInput {
-                let index = Int(UInt8(truncatingIfNeeded: currentValue) ^ CyclicRedundancyCheck.reflect(byte: byte))
-                currentValue = (currentValue >> 8) ^ lookupTable[index]
-            } else {
-                let index = Int(UInt8(truncatingIfNeeded: currentValue >> 8) ^ byte)
-                currentValue = ((currentValue << 8) & 0xFFFF) ^ lookupTable[index]
+        } else if Polynomial.self == UInt16.self, configuration.reflectInput {
+            for byte in buffer {
+                let index = UInt8(truncatingIfNeeded: currentValue) ^ CyclicRedundancyCheck<UInt8>.reflect(value: byte)
+                currentValue = (currentValue &>> 8) ^ lookupTable[Int(index)]
             }
-        } else if width <= 32 {
-            // For CRC-32
-            if configuration.reflectInput {
-                let index = Int(UInt8(truncatingIfNeeded: currentValue) ^ byte)
-                currentValue = (currentValue >> 8) ^ lookupTable[index]
-            } else {
-                let index = Int(UInt8(truncatingIfNeeded: currentValue >> 24) ^ byte)
-                currentValue = ((currentValue << 8) & 0xFFFFFFFF) ^ lookupTable[index]
+        } else if configuration.reflectInput {
+            for byte in buffer {
+                let index = UInt8(truncatingIfNeeded: currentValue) ^ byte
+                currentValue = (currentValue &>> 8) ^ lookupTable[Int(index)]
             }
         } else {
-            // For CRC-64
-            if configuration.reflectInput {
-                let index = Int(UInt8(truncatingIfNeeded: currentValue) ^ byte)
-                currentValue = (currentValue >> 8) ^ lookupTable[index]
-            } else {
-                let index = Int(UInt8(truncatingIfNeeded: currentValue >> 56) ^ byte)
-                currentValue = ((currentValue << 8)) ^ lookupTable[index]
+            let shiftAmount = Polynomial.bitWidth &- 8
+            for byte in buffer {
+                let index = UInt8(truncatingIfNeeded: currentValue &>> shiftAmount) ^ byte
+                currentValue = (currentValue &<< 8) ^ lookupTable[Int(index)]
             }
         }
     }
-    
+
+    /// Update the cyclic redundancy check with a single byte
+    @inline(__always)
+    public mutating func update(with string: String) {
+        update(with: string.utf8)
+    }
+
     /// Calculate the final cyclic redundancy check value
-    public var checksum: UInt64 {
-        let width = configuration.width
-        let mask = CyclicRedundancyCheck.bitMask(width: width)
-        
+    public var checksum: Polynomial {
+        let mask = Self.bitMask
         var result = currentValue
         
         if configuration.reflectOutput != configuration.reflectInput {
-            if width <= 8 {
-                result = UInt64(CyclicRedundancyCheck.reflect(byte: UInt8(truncatingIfNeeded: result)))
-            } else if width <= 16 {
-                result = UInt64(CyclicRedundancyCheck.reflect(value: result, width: 16))
-            } else if width <= 32 {
-                result = UInt64(CyclicRedundancyCheck.reflect(value: result, width: 32))
-            } else {
-                result = CyclicRedundancyCheck.reflect(value: result, width: 64)
-            }
+            result = CyclicRedundancyCheck.reflect(value: result)
         }
         
         // Apply final XOR and mask to width bits
         return (result ^ configuration.finalXORValue) & mask
     }
     
-    /// Compute a cyclic redundancy check for data in a single call
-    public mutating func compute(data: Data) -> UInt64 {
-        reset()
-        update(with: data)
-        return checksum
-    }
-    
     /// Compute a cyclic redundancy check for byte array in a single call
-    public mutating func compute(bytes: [UInt8]) -> UInt64 {
+    @inlinable
+    @inline(__always)
+    @_specialize(where Polynomial == UInt8, Bytes == UnsafeRawBufferPointer)
+    @_specialize(where Polynomial == UInt16, Bytes == UnsafeRawBufferPointer)
+    @_specialize(where Polynomial == UInt32, Bytes == UnsafeRawBufferPointer)
+    @_specialize(where Polynomial == UInt64, Bytes == UnsafeRawBufferPointer)
+    public mutating func compute<Bytes: Sequence>(bytes: Bytes) -> Polynomial where Bytes.Element == UInt8 {
         reset()
         update(with: bytes)
         return checksum
     }
-    
-    /// Compute a cyclic redundancy check for string in a single call
-    public mutating func compute(string: String) -> UInt64 {
+
+    /// Compute a cyclic redundancy check for byte array in a single call
+    @inlinable
+    @inline(__always)
+    public mutating func compute(bytes: UnsafeRawBufferPointer) -> Polynomial {
         reset()
-        update(with: string)
+        update(with: bytes)
         return checksum
+    }
+
+    /// Compute a cyclic redundancy check for string in a single call
+    @inlinable
+    public mutating func compute(string: String) -> Polynomial {
+        return compute(bytes: string.utf8)
     }
     
     /// Verify if a given checksum matches the computed cyclic redundancy check for input data
-    public mutating func verify(data: Data, against expectedChecksum: UInt64) -> Bool {
-        compute(data: data) == expectedChecksum
-    }
-    
-    /// Verify if a given checksum matches the computed cyclic redundancy check for input byte array
-    public mutating func verify(bytes: [UInt8], against expectedChecksum: UInt64) -> Bool {
+    @inlinable
+    @inline(__always)
+    public mutating func verify(bytes: some Sequence<UInt8>, against expectedChecksum: Polynomial) -> Bool {
         compute(bytes: bytes) == expectedChecksum
     }
     
     /// Verify if a given checksum matches the computed cyclic redundancy check for input string
-    public mutating func verify(string: String, against expectedChecksum: UInt64) -> Bool {
-        compute(string: string) == expectedChecksum
+    @inlinable
+    public mutating func verify(string: String, against expectedChecksum: Polynomial) -> Bool {
+        compute(bytes: string.utf8) == expectedChecksum
     }
     
     // MARK: - Helper Methods
     
     /// Generate lookup table for faster cyclic redundancy check computation
-    private static func generateLookupTable(configuration: CyclicRedundancyCheckConfiguration) -> [UInt64] {
-        var table = [UInt64](repeating: 0, count: 256)
-        let width = configuration.width
+    @usableFromInline
+    internal static func generateLookupTable(configuration: CyclicRedundancyCheckConfiguration<Polynomial>) -> [Polynomial] {
+        var table = [Polynomial](repeating: Polynomial(0), count: 256)
+        let width = Polynomial.bitWidth
         let polynomial = configuration.polynomial
-        let mask = bitMask(width: width)
+        let mask = Self.bitMask
         
-        for i in 0..<256 {
-            var crc: UInt64 = 0
-            var data = UInt64(i)
+        for i: UInt8 in .min ... .max {
+            var crc = 0 as Polynomial
+            let data: Polynomial
             
             if configuration.reflectInput {
-                data = UInt64(reflect(byte: UInt8(i)))
+                data = Polynomial(CyclicRedundancyCheck<UInt8>.reflect(value: i))
+            } else {
+                data = Polynomial(i)
             }
             
             // CRC algorithm differs based on reflection settings
@@ -376,58 +356,45 @@ public struct CyclicRedundancyCheck {
                 crc = data
                 for _ in 0..<8 {
                     if (crc & 1) != 0 {
-                        crc = (crc >> 1) ^ polynomial
+                        crc = (crc &>> 1) ^ polynomial
                     } else {
-                        crc >>= 1
+                        crc &>>= 1
                     }
                 }
             } else {
-                crc = data << (width - 8)
+                crc = data &<< (width &- 8)
                 
                 for _ in 0..<8 {
-                    if (crc & (1 << (width - 1))) != 0 {
-                        crc = (crc << 1) ^ polynomial
+                    if (crc & (1 &<< (width &- 1))) != 0 {
+                        crc = (crc &<< 1) ^ polynomial
                     } else {
-                        crc <<= 1
+                        crc &<<= 1
                     }
                 }
             }
             
-            table[i] = crc & mask
+            table[Int(i)] = crc & mask
         }
         
         return table
     }
     
     /// Create a bit mask for the specified width
-    private static func bitMask(width: Int) -> UInt64 {
-        if width >= 64 {
-            return UInt64.max
-        }
-        return (1 << width) - 1
-    }
-    
-    /// Reflect a byte (reverse bit order)
-    private static func reflect(byte: UInt8) -> UInt8 {
-        var input = byte
-        var output: UInt8 = 0
-        
-        for _ in 0..<8 {
-            output = (output << 1) | (input & 1)
-            input >>= 1
-        }
-        
-        return output
+    @usableFromInline
+    internal static var bitMask: Polynomial {
+        return Polynomial.max
     }
     
     /// Reflect a value of specified width (reverse bit order)
-    private static func reflect(value: UInt64, width: Int) -> UInt64 {
+    @usableFromInline
+    @inline(__always)
+    internal static func reflect(value: Polynomial) -> Polynomial {
         var input = value
-        var output: UInt64 = 0
+        var output: Polynomial = 0
         
-        for _ in 0..<width {
-            output = (output << 1) | (input & 1)
-            input >>= 1
+        for _ in 0..<Polynomial.bitWidth {
+            output = (output &<< 1) | (input & 1)
+            input &>>= 1
         }
         
         return output
@@ -436,52 +403,66 @@ public struct CyclicRedundancyCheck {
 
 // MARK: - Convenience Methods
 
-public extension CyclicRedundancyCheck {
+public extension CyclicRedundancyCheck<UInt8> {
     /// Compute cyclic redundancy check (CRC-8) for data
-    static func crc8(data: Data) -> UInt8 {
+    @inlinable
+    @inline(__always)
+    static func crc8(bytes: some Sequence<UInt8>) -> UInt8 {
         var cyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc8)
-        return UInt8(truncatingIfNeeded: cyclicRedundancyCheck.compute(data: data))
-    }
-    
-    /// Compute cyclic redundancy check (CRC-16) for data
-    static func crc16(data: Data) -> UInt16 {
-        var cyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc16)
-        return UInt16(truncatingIfNeeded: cyclicRedundancyCheck.compute(data: data))
-    }
-    
-    /// Compute cyclic redundancy check (CRC-32) for data
-    static func crc32(data: Data) -> UInt32 {
-        var cyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc32)
-        return UInt32(truncatingIfNeeded: cyclicRedundancyCheck.compute(data: data))
-    }
-    
-    /// Compute cyclic redundancy check (CRC-64) for data
-    static func crc64(data: Data) -> UInt64 {
-        var cyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc64ECMA)
-        return cyclicRedundancyCheck.compute(data: data)
+        return UInt8(truncatingIfNeeded: cyclicRedundancyCheck.compute(bytes: bytes))
     }
     
     /// Compute cyclic redundancy check (CRC-8) for string
+    @inlinable
     static func crc8(string: String) -> UInt8 {
-        var cyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc8)
-        return UInt8(truncatingIfNeeded: cyclicRedundancyCheck.compute(string: string))
+        return crc8(bytes: string.utf8)
+    }
+}
+
+public extension CyclicRedundancyCheck<UInt16> {
+    /// Compute cyclic redundancy check (CRC-16) for data
+    @inlinable
+    @inline(__always)
+    static func crc16(bytes: some Sequence<UInt8>) -> UInt16 {
+        var cyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc16)
+        return UInt16(truncatingIfNeeded: cyclicRedundancyCheck.compute(bytes: bytes))
     }
     
     /// Compute cyclic redundancy check (CRC-16) for string
+    @inlinable
     static func crc16(string: String) -> UInt16 {
-        var cyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc16)
-        return UInt16(truncatingIfNeeded: cyclicRedundancyCheck.compute(string: string))
+        return crc16(bytes: string.utf8)
+    }
+}
+
+public extension CyclicRedundancyCheck<UInt32> {
+    /// Compute cyclic redundancy check (CRC-32) for data
+    @inlinable
+    @inline(__always)
+    static func crc32(bytes: some Sequence<UInt8>) -> UInt32 {
+        var cyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc32)
+        return UInt32(truncatingIfNeeded: cyclicRedundancyCheck.compute(bytes: bytes))
     }
     
     /// Compute cyclic redundancy check (CRC-32) for string
+    @inlinable
     static func crc32(string: String) -> UInt32 {
-        var cyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc32)
-        return UInt32(truncatingIfNeeded: cyclicRedundancyCheck.compute(string: string))
+        return crc32(bytes: string.utf8)
+    }
+}
+
+public extension CyclicRedundancyCheck<UInt64> {
+    /// Compute cyclic redundancy check (CRC-64) for data
+    @inlinable
+    @inline(__always)
+    static func crc64(bytes: some Sequence<UInt8>) -> UInt64 {
+        var cyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc64ECMA)
+        return cyclicRedundancyCheck.compute(bytes: bytes)
     }
     
     /// Compute cyclic redundancy check (CRC-64) for string
+    @inlinable
     static func crc64(string: String) -> UInt64 {
-        var cyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc64ECMA)
-        return cyclicRedundancyCheck.compute(string: string)
+        return crc64(bytes: string.utf8)
     }
 }

@@ -26,15 +26,15 @@ struct ComprehensiveCyclicRedundancyCheckTests {
         // Expected values verified against multiple reference implementations
         
         var cyclicRedundancyCheck8 = CyclicRedundancyCheck(algorithm: .crc8)
-        let cyclicRedundancyCheck8Result = UInt8(truncatingIfNeeded: cyclicRedundancyCheck8.compute(string: standardTestString))
+        let cyclicRedundancyCheck8Result = cyclicRedundancyCheck8.compute(string: standardTestString)
         #expect(cyclicRedundancyCheck8Result == 0xF4)
         
         var cyclicRedundancyCheck8CDMA2000 = CyclicRedundancyCheck(algorithm: .crc8CDMA2000)
-        let cyclicRedundancyCheck8CDMA2000Result = UInt8(truncatingIfNeeded: cyclicRedundancyCheck8CDMA2000.compute(string: standardTestString))
+        let cyclicRedundancyCheck8CDMA2000Result = cyclicRedundancyCheck8CDMA2000.compute(string: standardTestString)
         #expect(cyclicRedundancyCheck8CDMA2000Result == 0xDA)
         
         var cyclicRedundancyCheck8WCDMA = CyclicRedundancyCheck(algorithm: .crc8WCDMA)
-        let cyclicRedundancyCheck8WCDMAResult = UInt8(truncatingIfNeeded: cyclicRedundancyCheck8WCDMA.compute(string: standardTestString))
+        let cyclicRedundancyCheck8WCDMAResult = cyclicRedundancyCheck8WCDMA.compute(string: standardTestString)
         #expect(cyclicRedundancyCheck8WCDMAResult == 0x40) // Our implementation produces 0x40
     }
     
@@ -45,19 +45,19 @@ struct ComprehensiveCyclicRedundancyCheckTests {
         // Expected values verified against multiple reference implementations
         
         var cyclicRedundancyCheck16 = CyclicRedundancyCheck(algorithm: .crc16)
-        let cyclicRedundancyCheck16Result = UInt16(truncatingIfNeeded: cyclicRedundancyCheck16.compute(string: standardTestString))
+        let cyclicRedundancyCheck16Result = cyclicRedundancyCheck16.compute(string: standardTestString)
         #expect(cyclicRedundancyCheck16Result == 0x0392, "CyclicRedundancyCheck-16 (IBM) value mismatch")
         
         var cyclicRedundancyCheck16CCITT = CyclicRedundancyCheck(algorithm: .crc16CCITT)
-        let cyclicRedundancyCheck16CCITTResult = UInt16(truncatingIfNeeded: cyclicRedundancyCheck16CCITT.compute(string: standardTestString))
+        let cyclicRedundancyCheck16CCITTResult = cyclicRedundancyCheck16CCITT.compute(string: standardTestString)
         #expect(cyclicRedundancyCheck16CCITTResult == 0x29B1, "CyclicRedundancyCheck-16-CCITT value mismatch")
         
         var cyclicRedundancyCheck16XMODEM = CyclicRedundancyCheck(algorithm: .crc16XMODEM)
-        let cyclicRedundancyCheck16XMODEMResult = UInt16(truncatingIfNeeded: cyclicRedundancyCheck16XMODEM.compute(string: standardTestString))
+        let cyclicRedundancyCheck16XMODEMResult = cyclicRedundancyCheck16XMODEM.compute(string: standardTestString)
         #expect(cyclicRedundancyCheck16XMODEMResult == 0x31C3, "CyclicRedundancyCheck-16-XMODEM value mismatch")
         
         var cyclicRedundancyCheck16MODBUS = CyclicRedundancyCheck(algorithm: .crc16MODBUS)
-        let cyclicRedundancyCheck16MODBUSResult = UInt16(truncatingIfNeeded: cyclicRedundancyCheck16MODBUS.compute(string: standardTestString))
+        let cyclicRedundancyCheck16MODBUSResult = cyclicRedundancyCheck16MODBUS.compute(string: standardTestString)
         #expect(cyclicRedundancyCheck16MODBUSResult == 0x3F4C, "CyclicRedundancyCheck-16-MODBUS value mismatch") // Our implementation produces 0x3F4C
     }
     
@@ -68,19 +68,19 @@ struct ComprehensiveCyclicRedundancyCheckTests {
         // Expected values verified against multiple reference implementations
         
         var cyclicRedundancyCheck32 = CyclicRedundancyCheck(algorithm: .crc32)
-        let cyclicRedundancyCheck32Result = UInt32(truncatingIfNeeded: cyclicRedundancyCheck32.compute(string: standardTestString))
+        let cyclicRedundancyCheck32Result = cyclicRedundancyCheck32.compute(string: standardTestString)
         #expect(cyclicRedundancyCheck32Result == 0xFC3C68AD, "CyclicRedundancyCheck-32 value mismatch")
         
         var cyclicRedundancyCheck32BZIP2 = CyclicRedundancyCheck(algorithm: .crc32BZIP2)
-        let cyclicRedundancyCheck32BZIP2Result = UInt32(truncatingIfNeeded: cyclicRedundancyCheck32BZIP2.compute(string: standardTestString))
+        let cyclicRedundancyCheck32BZIP2Result = cyclicRedundancyCheck32BZIP2.compute(string: standardTestString)
         #expect(cyclicRedundancyCheck32BZIP2Result == 0xFC891918, "CyclicRedundancyCheck-32-BZIP2 value mismatch")
         
         var cyclicRedundancyCheck32MPEG2 = CyclicRedundancyCheck(algorithm: .crc32MPEG2)
-        let cyclicRedundancyCheck32MPEG2Result = UInt32(truncatingIfNeeded: cyclicRedundancyCheck32MPEG2.compute(string: standardTestString))
+        let cyclicRedundancyCheck32MPEG2Result = cyclicRedundancyCheck32MPEG2.compute(string: standardTestString)
         #expect(cyclicRedundancyCheck32MPEG2Result == 0x0376E6E7, "CyclicRedundancyCheck-32-MPEG2 value mismatch")
         
         var cyclicRedundancyCheck32POSIX = CyclicRedundancyCheck(algorithm: .crc32POSIX)
-        let cyclicRedundancyCheck32POSIXResult = UInt32(truncatingIfNeeded: cyclicRedundancyCheck32POSIX.compute(string: standardTestString))
+        let cyclicRedundancyCheck32POSIXResult = cyclicRedundancyCheck32POSIX.compute(string: standardTestString)
         #expect(cyclicRedundancyCheck32POSIXResult == 0x765E7680, "CyclicRedundancyCheck-32-POSIX value mismatch")
     }
     
@@ -109,7 +109,7 @@ struct ComprehensiveCyclicRedundancyCheckTests {
     func testSpecialDataPatterns() async throws {
         // Test with all zeros
         var cyclicRedundancyCheck32 = CyclicRedundancyCheck(algorithm: .crc32)
-        let allZerosResult = UInt32(truncatingIfNeeded: cyclicRedundancyCheck32.compute(data: allZerosData))
+        let allZerosResult = cyclicRedundancyCheck32.compute(bytes: allZerosData)
         
         // Instead of checking against specific expected values, we'll verify that:
         // 1. Different patterns produce different CyclicRedundancyChecks
@@ -119,10 +119,10 @@ struct ComprehensiveCyclicRedundancyCheckTests {
         let firstZerosResult = allZerosResult
         
         // Test with all ones
-        let allOnesResult = UInt32(truncatingIfNeeded: cyclicRedundancyCheck32.compute(data: allOnesData))
+        let allOnesResult = cyclicRedundancyCheck32.compute(bytes: allOnesData)
         
         // Test with alternating bits
-        let alternatingResult = UInt32(truncatingIfNeeded: cyclicRedundancyCheck32.compute(data: alternatingBitsData))
+        let alternatingResult = cyclicRedundancyCheck32.compute(bytes: alternatingBitsData)
         
         // Different patterns should produce different CyclicRedundancyChecks
         #expect(allZerosResult != allOnesResult, "Different patterns should produce different CyclicRedundancyChecks")
@@ -130,7 +130,7 @@ struct ComprehensiveCyclicRedundancyCheckTests {
         #expect(allOnesResult != alternatingResult, "Different patterns should produce different CyclicRedundancyChecks")
         
         // Verify repeatability
-        let secondZerosResult = UInt32(truncatingIfNeeded: cyclicRedundancyCheck32.compute(data: allZerosData))
+        let secondZerosResult = cyclicRedundancyCheck32.compute(bytes: allZerosData)
         #expect(firstZerosResult == secondZerosResult, "Same pattern should produce the same CyclicRedundancyCheck result")
     }
 }
@@ -144,7 +144,7 @@ struct StandardCyclicRedundancyCheckTests {
         var cyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc8)
         
         // Test one-shot computation
-        let result = UInt8(truncatingIfNeeded: cyclicRedundancyCheck.compute(string: standardTestString))
+        let result = cyclicRedundancyCheck.compute(string: standardTestString)
         #expect(result == expectedCyclicRedundancyCheck)
         
         // Test convenience static method
@@ -152,10 +152,10 @@ struct StandardCyclicRedundancyCheckTests {
         #expect(staticResult == expectedCyclicRedundancyCheck)
         
         // Test different input types
-        let dataResult = UInt8(truncatingIfNeeded: cyclicRedundancyCheck.compute(data: standardTestData))
+        let dataResult = cyclicRedundancyCheck.compute(bytes: standardTestData)
         #expect(dataResult == expectedCyclicRedundancyCheck)
         
-        let bytesResult = UInt8(truncatingIfNeeded: cyclicRedundancyCheck.compute(bytes: standardTestBytes))
+        let bytesResult = cyclicRedundancyCheck.compute(bytes: standardTestBytes)
         #expect(bytesResult == expectedCyclicRedundancyCheck)
     }
     
@@ -166,19 +166,19 @@ struct StandardCyclicRedundancyCheckTests {
         // CyclicRedundancyCheck-16 (IBM) expected value for our implementation
         let expectedCyclicRedundancyCheck16: UInt16 = 0x0392
         var cyclicRedundancyCheck16 = CyclicRedundancyCheck(algorithm: .crc16)
-        let result16 = UInt16(truncatingIfNeeded: cyclicRedundancyCheck16.compute(string: standardTestString))
+        let result16 = cyclicRedundancyCheck16.compute(string: standardTestString)
         #expect(result16 == expectedCyclicRedundancyCheck16)
         
         // CyclicRedundancyCheck-16-CCITT expected value for our implementation
         let expectedCyclicRedundancyCheck16CCITT: UInt16 = 0x29B1
         var cyclicRedundancyCheck16CCITT = CyclicRedundancyCheck(algorithm: .crc16CCITT)
-        let result16CCITT = UInt16(truncatingIfNeeded: cyclicRedundancyCheck16CCITT.compute(string: standardTestString))
+        let result16CCITT = cyclicRedundancyCheck16CCITT.compute(string: standardTestString)
         #expect(result16CCITT == expectedCyclicRedundancyCheck16CCITT)
         
         // CyclicRedundancyCheck-16-XMODEM expected value for our implementation
         let expectedCyclicRedundancyCheck16XMODEM: UInt16 = 0x31C3
         var cyclicRedundancyCheck16XMODEM = CyclicRedundancyCheck(algorithm: .crc16XMODEM)
-        let result16XMODEM = UInt16(truncatingIfNeeded: cyclicRedundancyCheck16XMODEM.compute(string: standardTestString))
+        let result16XMODEM = cyclicRedundancyCheck16XMODEM.compute(string: standardTestString)
         #expect(result16XMODEM == expectedCyclicRedundancyCheck16XMODEM)
         
         // Test convenience static method
@@ -194,7 +194,7 @@ struct StandardCyclicRedundancyCheckTests {
         let expectedCyclicRedundancyCheck: UInt32 = 0xFC3C68AD
         
         // Test one-shot computation
-        let result = UInt32(truncatingIfNeeded: cyclicRedundancyCheck.compute(string: standardTestString))
+        let result = cyclicRedundancyCheck.compute(string: standardTestString)
         #expect(result == expectedCyclicRedundancyCheck)
         
         // Test convenience static method
@@ -202,10 +202,10 @@ struct StandardCyclicRedundancyCheckTests {
         #expect(staticResult == expectedCyclicRedundancyCheck)
         
         // Test different input types
-        let dataResult = UInt32(truncatingIfNeeded: cyclicRedundancyCheck.compute(data: standardTestData))
+        let dataResult = cyclicRedundancyCheck.compute(bytes: standardTestData)
         #expect(dataResult == expectedCyclicRedundancyCheck)
         
-        let bytesResult = UInt32(truncatingIfNeeded: cyclicRedundancyCheck.compute(bytes: standardTestBytes))
+        let bytesResult = cyclicRedundancyCheck.compute(bytes: standardTestBytes)
         #expect(bytesResult == expectedCyclicRedundancyCheck)
     }
     
@@ -294,8 +294,7 @@ struct ReflectionTests {
         
         // Test 1: CyclicRedundancyCheck-16 with different reflection settings
         // Base config: CyclicRedundancyCheck-16 (no reflection)
-        let baseConfig = CyclicRedundancyCheckConfiguration(
-            width: 16,
+        let baseConfig = CyclicRedundancyCheckConfiguration<UInt16>(
             polynomial: 0x1021,
             initialValue: 0x0000,
             finalXORValue: 0x0000,
@@ -303,11 +302,10 @@ struct ReflectionTests {
             reflectOutput: false
         )
         var cyclicRedundancyCheck = CyclicRedundancyCheck(configuration: baseConfig)
-        let baseResult = UInt16(truncatingIfNeeded: cyclicRedundancyCheck.compute(data: testData))
+        let baseResult = cyclicRedundancyCheck.compute(bytes: testData)
         
         // Input reflection only
-        let inputReflectConfig = CyclicRedundancyCheckConfiguration(
-            width: 16,
+        let inputReflectConfig = CyclicRedundancyCheckConfiguration<UInt16>(
             polynomial: 0x1021,
             initialValue: 0x0000,
             finalXORValue: 0x0000,
@@ -315,11 +313,10 @@ struct ReflectionTests {
             reflectOutput: false
         )
         var inputReflectCyclicRedundancyCheck = CyclicRedundancyCheck(configuration: inputReflectConfig)
-        let inputReflectResult = UInt16(truncatingIfNeeded: inputReflectCyclicRedundancyCheck.compute(data: testData))
+        let inputReflectResult = inputReflectCyclicRedundancyCheck.compute(bytes: testData)
         
         // Output reflection only
-        let outputReflectConfig = CyclicRedundancyCheckConfiguration(
-            width: 16,
+        let outputReflectConfig = CyclicRedundancyCheckConfiguration<UInt16>(
             polynomial: 0x1021,
             initialValue: 0x0000,
             finalXORValue: 0x0000,
@@ -327,11 +324,10 @@ struct ReflectionTests {
             reflectOutput: true
         )
         var outputReflectCyclicRedundancyCheck = CyclicRedundancyCheck(configuration: outputReflectConfig)
-        let outputReflectResult = UInt16(truncatingIfNeeded: outputReflectCyclicRedundancyCheck.compute(data: testData))
+        let outputReflectResult = outputReflectCyclicRedundancyCheck.compute(bytes: testData)
         
         // Both reflections
-        let bothReflectConfig = CyclicRedundancyCheckConfiguration(
-            width: 16,
+        let bothReflectConfig = CyclicRedundancyCheckConfiguration<UInt16>(
             polynomial: 0x1021,
             initialValue: 0x0000,
             finalXORValue: 0x0000,
@@ -339,7 +335,7 @@ struct ReflectionTests {
             reflectOutput: true
         )
         var bothReflectCyclicRedundancyCheck = CyclicRedundancyCheck(configuration: bothReflectConfig)
-        let bothReflectResult = UInt16(truncatingIfNeeded: bothReflectCyclicRedundancyCheck.compute(data: testData))
+        let bothReflectResult = bothReflectCyclicRedundancyCheck.compute(bytes: testData)
         
         // Verify each configuration produces a different result
         #expect(baseResult != inputReflectResult, "Input reflection should change CyclicRedundancyCheck result")
@@ -356,8 +352,7 @@ struct EdgeCaseBoundaryTests {
     @Test("CyclicRedundancyCheck calculation should handle width boundaries correctly")
     func testWidthBoundaries() async throws {
         // Test minimum width (8 bits)
-        let minWidthConfig = CyclicRedundancyCheckConfiguration(
-            width: 8,
+        let minWidthConfig = CyclicRedundancyCheckConfiguration<UInt8>(
             polynomial: 0x07,
             initialValue: 0x00,
             finalXORValue: 0x00,
@@ -369,8 +364,7 @@ struct EdgeCaseBoundaryTests {
         #expect(minWidthResult == 0xF4)
         
         // Test maximum width (64 bits)
-        let maxWidthConfig = CyclicRedundancyCheckConfiguration(
-            width: 64,
+        let maxWidthConfig = CyclicRedundancyCheckConfiguration<UInt64>(
             polynomial: 0x42F0E1EBA9EA3693,
             initialValue: 0x0000000000000000,
             finalXORValue: 0x0000000000000000,
@@ -388,8 +382,7 @@ struct EdgeCaseBoundaryTests {
     @Test("CyclicRedundancyCheck should handle extreme polynomial values")
     func testExtremePolynomials() async throws {
         // Polynomial = 1 (smallest non-zero polynomial)
-        let minPolyConfig = CyclicRedundancyCheckConfiguration(
-            width: 8,
+        let minPolyConfig = CyclicRedundancyCheckConfiguration<UInt8>(
             polynomial: 0x01,
             initialValue: 0x00,
             finalXORValue: 0x00,
@@ -400,8 +393,7 @@ struct EdgeCaseBoundaryTests {
         let minPolyResult = minPolyCyclicRedundancyCheck.compute(string: standardTestString)
         
         // Try with a very large polynomial that uses all bits for the width
-        let maxPolyConfig = CyclicRedundancyCheckConfiguration(
-            width: 16,
+        let maxPolyConfig = CyclicRedundancyCheckConfiguration<UInt16>(
             polynomial: 0xFFFF,
             initialValue: 0x0000,
             finalXORValue: 0x0000,
@@ -432,9 +424,9 @@ struct LargeDataTests {
         var cyclicRedundancyCheck32 = CyclicRedundancyCheck(algorithm: .crc32)
         
         // Compute CyclicRedundancyChecks for large data
-        let largeZerosResult = UInt32(truncatingIfNeeded: cyclicRedundancyCheck32.compute(data: largeZerosData))
-        let largeOnesResult = UInt32(truncatingIfNeeded: cyclicRedundancyCheck32.compute(data: largeOnesData))
-        let largeAlternatingResult = UInt32(truncatingIfNeeded: cyclicRedundancyCheck32.compute(data: largeAlternatingData))
+        let largeZerosResult = cyclicRedundancyCheck32.compute(bytes: largeZerosData)
+        let largeOnesResult = cyclicRedundancyCheck32.compute(bytes: largeOnesData)
+        let largeAlternatingResult = cyclicRedundancyCheck32.compute(bytes: largeAlternatingData)
         
         // We're not checking for specific values (as they'd need to be pre-computed),
         // but instead ensuring that different patterns produce different CyclicRedundancyChecks
@@ -458,7 +450,7 @@ struct LargeDataTests {
         
         // One-shot computation
         var cyclicRedundancyCheck32 = CyclicRedundancyCheck(algorithm: .crc32)
-        let expectedResult = cyclicRedundancyCheck32.compute(data: largeData)
+        let expectedResult = cyclicRedundancyCheck32.compute(bytes: largeData)
         
         // Reset and compute incrementally by chunks
         cyclicRedundancyCheck32.reset()
@@ -506,7 +498,7 @@ struct ThreadSafetyTests {
         // Create a function that performs CyclicRedundancyCheck calculation
         func computeCyclicRedundancyCheck() -> UInt32 {
             var cyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc32)
-            return UInt32(truncatingIfNeeded: cyclicRedundancyCheck.compute(string: testString))
+            return cyclicRedundancyCheck.compute(string: testString)
         }
         
         // Create multiple concurrent tasks
@@ -533,8 +525,7 @@ struct CustomConfigurationTests {
     @Test("Custom CyclicRedundancyCheck configuration should produce expected results")
     func testCustomConfiguration() async throws {
         // Create a custom CyclicRedundancyCheck-16-CCITT configuration manually
-        let customConfig = CyclicRedundancyCheckConfiguration(
-            width: 16,
+        let customConfig = CyclicRedundancyCheckConfiguration<UInt16>(
             polynomial: 0x1021,
             initialValue: 0xFFFF,
             finalXORValue: 0x0000,
@@ -547,13 +538,13 @@ struct CustomConfigurationTests {
         
         // This should match the standard CyclicRedundancyCheck-16-CCITT result for "123456789"
         let expectedCyclicRedundancyCheck: UInt16 = 0x29B1
-        let result = UInt16(truncatingIfNeeded: customCyclicRedundancyCheck.compute(string: standardTestString))
+        let result = customCyclicRedundancyCheck.compute(string: standardTestString)
         
         #expect(result == expectedCyclicRedundancyCheck)
         
         // Compare with the built-in configuration
         var standardCyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc16CCITT)
-        let standardResult = UInt16(truncatingIfNeeded: standardCyclicRedundancyCheck.compute(string: standardTestString))
+        let standardResult = standardCyclicRedundancyCheck.compute(string: standardTestString)
         
         #expect(result == standardResult)
     }
@@ -575,7 +566,7 @@ struct VerificationTests {
         #expect(stringVerification == true)
         
         // Verify with data input
-        let dataVerification = cyclicRedundancyCheck.verify(data: standardTestData, against: actualCyclicRedundancyCheck)
+        let dataVerification = cyclicRedundancyCheck.verify(bytes: standardTestData, against: actualCyclicRedundancyCheck)
         #expect(dataVerification == true)
         
         // Verify with bytes input
@@ -601,18 +592,18 @@ struct EdgeCaseTests {
         
         // CyclicRedundancyCheck-32 of empty input with our implementation
         var cyclicRedundancyCheck32 = CyclicRedundancyCheck(algorithm: .crc32)
-        let cyclicRedundancyCheck32Result = UInt32(truncatingIfNeeded: cyclicRedundancyCheck32.compute(string: emptyString))
+        let cyclicRedundancyCheck32Result = cyclicRedundancyCheck32.compute(string: emptyString)
         #expect(cyclicRedundancyCheck32Result == 0)
         
-        let cyclicRedundancyCheck32DataResult = UInt32(truncatingIfNeeded: cyclicRedundancyCheck32.compute(data: emptyData))
+        let cyclicRedundancyCheck32DataResult = cyclicRedundancyCheck32.compute(bytes: emptyData)
         #expect(cyclicRedundancyCheck32DataResult == 0)
         
-        let cyclicRedundancyCheck32BytesResult = UInt32(truncatingIfNeeded: cyclicRedundancyCheck32.compute(bytes: emptyBytes))
+        let cyclicRedundancyCheck32BytesResult = cyclicRedundancyCheck32.compute(bytes: emptyBytes)
         #expect(cyclicRedundancyCheck32BytesResult == 0)
         
         // CyclicRedundancyCheck-16 of empty input
         var cyclicRedundancyCheck16 = CyclicRedundancyCheck(algorithm: .crc16)
-        let cyclicRedundancyCheck16Result = UInt16(truncatingIfNeeded: cyclicRedundancyCheck16.compute(string: emptyString))
+        let cyclicRedundancyCheck16Result = cyclicRedundancyCheck16.compute(string: emptyString)
         #expect(cyclicRedundancyCheck16Result == 0x0000)
     }
     
@@ -625,9 +616,9 @@ struct EdgeCaseTests {
         
         // CyclicRedundancyCheck-32 for single byte "A"
         var cyclicRedundancyCheck32 = CyclicRedundancyCheck(algorithm: .crc32)
-        let cyclicRedundancyCheck32Result = UInt32(truncatingIfNeeded: cyclicRedundancyCheck32.compute(string: singleByteString))
-        let cyclicRedundancyCheck32DataResult = UInt32(truncatingIfNeeded: cyclicRedundancyCheck32.compute(data: singleByteData))
-        let cyclicRedundancyCheck32BytesResult = UInt32(truncatingIfNeeded: cyclicRedundancyCheck32.compute(bytes: singleByteArray))
+        let cyclicRedundancyCheck32Result = cyclicRedundancyCheck32.compute(string: singleByteString)
+        let cyclicRedundancyCheck32DataResult = cyclicRedundancyCheck32.compute(bytes: singleByteData)
+        let cyclicRedundancyCheck32BytesResult = cyclicRedundancyCheck32.compute(bytes: singleByteArray)
         
         // All three methods should give the same result
         #expect(cyclicRedundancyCheck32Result == cyclicRedundancyCheck32DataResult)
@@ -651,7 +642,9 @@ struct PerformanceTests {
         // Measure CyclicRedundancyCheck-32 computation time
         var cyclicRedundancyCheck32 = CyclicRedundancyCheck(algorithm: .crc32)
         let startTime = Date()
-        _ = cyclicRedundancyCheck32.compute(data: randomData)
+        for _ in 0..<1000 {
+            _ = cyclicRedundancyCheck32.compute(bytes: randomData)
+        }
         let endTime = Date()
         
         let elapsedTime = endTime.timeIntervalSince(startTime)
