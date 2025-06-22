@@ -11,7 +11,7 @@
 # Features
 
 - Support for iOS, tvOS, watchOS, macOS, Linux, Windows and Android.
-- Support for CRC-8, CRC-16, CRC-32, CRC-64 with configurable parameters and flexible inputs.
+- Support for CRC-8, CRC-16, CRC-32, CRC-32C (Castagnoli), CRC-64 with configurable parameters and flexible inputs.
 - Flexible input handling: `String`, `[UInt8]` (byte arrays), `Data`, and streams for large data sets.
 - Incremental CRC calculation for streaming or chunked data.
 - Custom CRC definitions and verification.
@@ -29,25 +29,36 @@ dependencies: [
 
 # Usage
 
+## Supported CRC Algorithms
+
+The library includes pre-configured implementations of common CRC algorithms:
+
+- **CRC-8**: Standard CRC-8, CRC-8-CDMA2000, CRC-8-WCDMA
+- **CRC-16**: CRC-16-IBM, CRC-16-CCITT, CRC-16-XMODEM, CRC-16-MODBUS
+- **CRC-32**: CRC-32 (Ethernet), CRC-32-BZIP2, CRC-32-MPEG2, CRC-32-POSIX, CRC-32C (Castagnoli)
+- **CRC-64**: CRC-64-ISO, CRC-64-ECMA
+
 ### Basic Usage
 
 ```swift
 import CyclicRedundancyCheck
 
 // One-shot CRC-32 calculation
-let data = "123456789".data(using: .utf8)!
-let crc32 = CyclicRedundancyCheck.crc32(data: data)
-print("CRC-32: \(String(format: "0x%08X", crc32))") // Should output: 0xCBF43926
+let crc32 = CyclicRedundancyCheck.crc32(string: "123456789")
+print("CRC-32: \(String(format: "0x%08X", crc32))") // Should output: 0xFC3C68AD
 
 // Using a predefined standard
 let crc16 = CyclicRedundancyCheck.crc16(string: "Hello, world!")
 print("CRC-16: \(String(format: "0x%04X", crc16))")
 
+// CRC-32C (Castagnoli) - commonly used for data integrity
+let crc32c = CyclicRedundancyCheck.crc32c(string: "123456789")
+print("CRC-32C: \(String(format: "0x%08X", crc32c))") // Should output: 0xF89D04C3
+
 // Incremental calculation
 var calculator = CyclicRedundancyCheck(algorithm: .crc32)
-calculator.reset()
-calculator.update(with: "Hello, ".data(using: .utf8)!)
-calculator.update(with: "world!".data(using: .utf8)!)
+calculator.update(with: "Hello, ")
+calculator.update(with: "world!")
 let result = calculator.checksum
 ```
 
@@ -55,8 +66,7 @@ let result = calculator.checksum
 
 ```swift
 // Creating a custom CRC algorithm
-let customConfig = CyclicRedundancyCheckConfiguration(
-    width: 16,
+let customConfig = CyclicRedundancyCheckConfiguration<UInt16>(
     polynomial: 0x8005,
     initialValue: 0xFFFF,
     finalXORValue: 0x0000,
@@ -71,10 +81,9 @@ let result = customCRC.compute(string: "Test data")
 ### Verification
 
 ```swift
-let data = "123456789".data(using: .utf8)!
-let expectedCRC: UInt32 = 0xCBF43926
+let expectedCRC: UInt32 = 0xFC3C68AD
 var calculator = CyclicRedundancyCheck(algorithm: .crc32)
-let isValid = calculator.verify(data: data, against: UInt64(expectedCRC))
+let isValid = calculator.verify(string: "123456789", against: expectedCRC)
 print("CRC verification: \(isValid ? "Valid" : "Invalid")")
 ```
 

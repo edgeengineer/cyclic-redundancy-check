@@ -82,6 +82,10 @@ struct ComprehensiveCyclicRedundancyCheckTests {
         var cyclicRedundancyCheck32POSIX = CyclicRedundancyCheck(algorithm: .crc32POSIX)
         let cyclicRedundancyCheck32POSIXResult = cyclicRedundancyCheck32POSIX.compute(string: standardTestString)
         #expect(cyclicRedundancyCheck32POSIXResult == 0x765E7680, "CyclicRedundancyCheck-32-POSIX value mismatch")
+        
+        var cyclicRedundancyCheck32C = CyclicRedundancyCheck(algorithm: .crc32C)
+        let cyclicRedundancyCheck32CResult = cyclicRedundancyCheck32C.compute(string: standardTestString)
+        #expect(cyclicRedundancyCheck32CResult == 0xF89D04C3, "CyclicRedundancyCheck-32C (Castagnoli) value mismatch")
     }
     
     // CyclicRedundancyCheck-64 variants
@@ -221,6 +225,41 @@ struct StandardCyclicRedundancyCheckTests {
         let staticResult = CyclicRedundancyCheck.crc64(string: standardTestString)
         #expect(staticResult == expectedCyclicRedundancyCheck64ECMA)
     }
+    
+    @Test("CyclicRedundancyCheck-32C (Castagnoli) should match expected values")
+    func testCyclicRedundancyCheck32C() async throws {
+        // Expected CyclicRedundancyCheck-32C for "123456789" is 0xF89D04C3
+        let expectedCyclicRedundancyCheck: UInt32 = 0xF89D04C3
+        var cyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc32C)
+        
+        // Test one-shot computation
+        let result = cyclicRedundancyCheck.compute(string: standardTestString)
+        #expect(result == expectedCyclicRedundancyCheck)
+        
+        // Test convenience static method
+        let staticResult = CyclicRedundancyCheck.crc32c(string: standardTestString)
+        #expect(staticResult == expectedCyclicRedundancyCheck)
+        
+        // Test different input types
+        let dataResult = cyclicRedundancyCheck.compute(bytes: standardTestData)
+        #expect(dataResult == expectedCyclicRedundancyCheck)
+        
+        let bytesResult = cyclicRedundancyCheck.compute(bytes: standardTestBytes)
+        #expect(bytesResult == expectedCyclicRedundancyCheck)
+        
+        // Additional test vectors for CRC32C
+        // Empty string
+        let emptyResult = CyclicRedundancyCheck.crc32c(string: "")
+        #expect(emptyResult == 0x00000000)
+        
+        // Single character
+        let singleCharResult = CyclicRedundancyCheck.crc32c(string: "a")
+        #expect(singleCharResult == 0xF3059051)
+        
+        // Common test phrase
+        let testPhraseResult = CyclicRedundancyCheck.crc32c(string: "The quick brown fox jumps over the lazy dog")
+        #expect(testPhraseResult == 0xEE4DC1BE)
+    }
 }
 
 // MARK: - Incremental Calculation Tests
@@ -280,6 +319,34 @@ struct IncrementalCyclicRedundancyCheckTests {
         
         // Result should be different
         #expect(firstResult != thirdResult)
+    }
+    
+    @Test("CRC32C incremental calculation should match one-shot result")
+    func testCRC32CIncrementalCalculation() async throws {
+        // Test with CyclicRedundancyCheck-32C
+        var cyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc32C)
+        
+        // One-shot computation
+        let expectedResult = cyclicRedundancyCheck.compute(string: standardTestString)
+        
+        // Reset and compute incrementally
+        cyclicRedundancyCheck.reset()
+        
+        // Split the input into multiple parts
+        let part1 = String(standardTestString.prefix(3)) // "123"
+        let part2 = String(standardTestString.dropFirst(3).prefix(3)) // "456"
+        let part3 = String(standardTestString.dropFirst(6)) // "789"
+        
+        // Update incrementally
+        cyclicRedundancyCheck.update(with: part1)
+        cyclicRedundancyCheck.update(with: part2)
+        cyclicRedundancyCheck.update(with: part3)
+        
+        // Get final result
+        let incrementalResult = cyclicRedundancyCheck.checksum
+        
+        // Results should match
+        #expect(incrementalResult == expectedResult)
     }
 }
 

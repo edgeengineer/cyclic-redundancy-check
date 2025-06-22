@@ -156,6 +156,15 @@ public extension StandardCyclicRedundancyCheckAlgorithm<UInt32> {
             reflectOutput: false
         )
     )
+    static let crc32C = StandardCyclicRedundancyCheckAlgorithm(
+        configuration: CyclicRedundancyCheckConfiguration(
+            polynomial: 0x1EDC6F41,
+            initialValue: 0xFFFFFFFF,
+            finalXORValue: 0xFFFFFFFF,
+            reflectInput: true,
+            reflectOutput: true
+        )
+    )
 }
 
 public extension StandardCyclicRedundancyCheckAlgorithm<UInt64> {
@@ -448,6 +457,20 @@ public extension CyclicRedundancyCheck<UInt32> {
     @inlinable
     static func crc32(string: String) -> UInt32 {
         return crc32(bytes: string.utf8)
+    }
+    
+    /// Compute cyclic redundancy check (CRC-32C Castagnoli) for data
+    @inlinable
+    @inline(__always)
+    static func crc32c(bytes: some Sequence<UInt8>) -> UInt32 {
+        var cyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc32C)
+        return UInt32(truncatingIfNeeded: cyclicRedundancyCheck.compute(bytes: bytes))
+    }
+    
+    /// Compute cyclic redundancy check (CRC-32C Castagnoli) for string
+    @inlinable
+    static func crc32c(string: String) -> UInt32 {
+        return crc32c(bytes: string.utf8)
     }
 }
 
