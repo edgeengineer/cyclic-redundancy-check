@@ -23,7 +23,7 @@ Add this package to your project using Swift Package Manager:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/edgeengineer/cyclic-redundancy-check.git", from: "0.0.2")
+    .package(url: "https://github.com/edgeengineer/cyclic-redundancy-check.git", from: "0.0.4")
 ]
 ```
 
@@ -45,7 +45,7 @@ import CyclicRedundancyCheck
 
 // One-shot CRC-32 calculation
 let crc32 = CyclicRedundancyCheck.crc32(string: "123456789")
-print("CRC-32: \(String(format: "0x%08X", crc32))") // Should output: 0xFC3C68AD
+print("CRC-32: \(String(format: "0x%08X", crc32))") // Should output: 0xCBF43926
 
 // Using a predefined standard
 let crc16 = CyclicRedundancyCheck.crc16(string: "Hello, world!")
@@ -53,7 +53,7 @@ print("CRC-16: \(String(format: "0x%04X", crc16))")
 
 // CRC-32C (Castagnoli) - commonly used for data integrity
 let crc32c = CyclicRedundancyCheck.crc32c(string: "123456789")
-print("CRC-32C: \(String(format: "0x%08X", crc32c))") // Should output: 0xF89D04C3
+print("CRC-32C: \(String(format: "0x%08X", crc32c))") // Should output: 0xE3069283
 
 // Incremental calculation
 var calculator = CyclicRedundancyCheck(algorithm: .crc32)
@@ -81,7 +81,7 @@ let result = customCRC.compute(string: "Test data")
 ### Verification
 
 ```swift
-let expectedCRC: UInt32 = 0xFC3C68AD
+let expectedCRC: UInt32 = 0xCBF43926
 var calculator = CyclicRedundancyCheck(algorithm: .crc32)
 let isValid = calculator.verify(string: "123456789", against: expectedCRC)
 print("CRC verification: \(isValid ? "Valid" : "Invalid")")
