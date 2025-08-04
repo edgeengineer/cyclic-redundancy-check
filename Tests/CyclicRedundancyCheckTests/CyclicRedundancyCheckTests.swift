@@ -35,7 +35,7 @@ struct ComprehensiveCyclicRedundancyCheckTests {
         
         var cyclicRedundancyCheck8WCDMA = CyclicRedundancyCheck(algorithm: .crc8WCDMA)
         let cyclicRedundancyCheck8WCDMAResult = cyclicRedundancyCheck8WCDMA.compute(string: standardTestString)
-        #expect(cyclicRedundancyCheck8WCDMAResult == 0x40) // Our implementation produces 0x40
+        #expect(cyclicRedundancyCheck8WCDMAResult == 0x25) // CRC-8-WCDMA produces 0x25
     }
     
     // CyclicRedundancyCheck-16 variants
@@ -46,7 +46,7 @@ struct ComprehensiveCyclicRedundancyCheckTests {
         
         var cyclicRedundancyCheck16 = CyclicRedundancyCheck(algorithm: .crc16)
         let cyclicRedundancyCheck16Result = cyclicRedundancyCheck16.compute(string: standardTestString)
-        #expect(cyclicRedundancyCheck16Result == 0x0392, "CyclicRedundancyCheck-16 (IBM) value mismatch")
+        #expect(cyclicRedundancyCheck16Result == 0xBB3D, "CyclicRedundancyCheck-16 (IBM) value mismatch")
         
         var cyclicRedundancyCheck16CCITT = CyclicRedundancyCheck(algorithm: .crc16CCITT)
         let cyclicRedundancyCheck16CCITTResult = cyclicRedundancyCheck16CCITT.compute(string: standardTestString)
@@ -58,7 +58,7 @@ struct ComprehensiveCyclicRedundancyCheckTests {
         
         var cyclicRedundancyCheck16MODBUS = CyclicRedundancyCheck(algorithm: .crc16MODBUS)
         let cyclicRedundancyCheck16MODBUSResult = cyclicRedundancyCheck16MODBUS.compute(string: standardTestString)
-        #expect(cyclicRedundancyCheck16MODBUSResult == 0x3F4C, "CyclicRedundancyCheck-16-MODBUS value mismatch") // Our implementation produces 0x3F4C
+        #expect(cyclicRedundancyCheck16MODBUSResult == 0x4B37, "CyclicRedundancyCheck-16-MODBUS value mismatch")
     }
     
     // CyclicRedundancyCheck-32 variants
@@ -69,7 +69,7 @@ struct ComprehensiveCyclicRedundancyCheckTests {
         
         var cyclicRedundancyCheck32 = CyclicRedundancyCheck(algorithm: .crc32)
         let cyclicRedundancyCheck32Result = cyclicRedundancyCheck32.compute(string: standardTestString)
-        #expect(cyclicRedundancyCheck32Result == 0xFC3C68AD, "CyclicRedundancyCheck-32 value mismatch")
+        #expect(cyclicRedundancyCheck32Result == 0xCBF43926, "CyclicRedundancyCheck-32 value mismatch")
         
         var cyclicRedundancyCheck32BZIP2 = CyclicRedundancyCheck(algorithm: .crc32BZIP2)
         let cyclicRedundancyCheck32BZIP2Result = cyclicRedundancyCheck32BZIP2.compute(string: standardTestString)
@@ -85,7 +85,7 @@ struct ComprehensiveCyclicRedundancyCheckTests {
         
         var cyclicRedundancyCheck32C = CyclicRedundancyCheck(algorithm: .crc32C)
         let cyclicRedundancyCheck32CResult = cyclicRedundancyCheck32C.compute(string: standardTestString)
-        #expect(cyclicRedundancyCheck32CResult == 0xF89D04C3, "CyclicRedundancyCheck-32C (Castagnoli) value mismatch")
+        #expect(cyclicRedundancyCheck32CResult == 0xE3069283, "CyclicRedundancyCheck-32C (Castagnoli) value mismatch")
     }
     
     // CyclicRedundancyCheck-64 variants
@@ -167,8 +167,8 @@ struct StandardCyclicRedundancyCheckTests {
     func testCyclicRedundancyCheck16() async throws {
         // Test multiple CyclicRedundancyCheck-16 variants with expected values for "123456789"
         
-        // CyclicRedundancyCheck-16 (IBM) expected value for our implementation
-        let expectedCyclicRedundancyCheck16: UInt16 = 0x0392
+        // CyclicRedundancyCheck-16 (IBM) expected value
+        let expectedCyclicRedundancyCheck16: UInt16 = 0xBB3D
         var cyclicRedundancyCheck16 = CyclicRedundancyCheck(algorithm: .crc16)
         let result16 = cyclicRedundancyCheck16.compute(string: standardTestString)
         #expect(result16 == expectedCyclicRedundancyCheck16)
@@ -194,8 +194,8 @@ struct StandardCyclicRedundancyCheckTests {
     func testCyclicRedundancyCheck32() async throws {
         var cyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc32)
         
-        // Expected CyclicRedundancyCheck-32 value for our implementation
-        let expectedCyclicRedundancyCheck: UInt32 = 0xFC3C68AD
+        // Expected CyclicRedundancyCheck-32 value
+        let expectedCyclicRedundancyCheck: UInt32 = 0xCBF43926
         
         // Test one-shot computation
         let result = cyclicRedundancyCheck.compute(string: standardTestString)
@@ -228,8 +228,8 @@ struct StandardCyclicRedundancyCheckTests {
     
     @Test("CyclicRedundancyCheck-32C (Castagnoli) should match expected values")
     func testCyclicRedundancyCheck32C() async throws {
-        // Expected CyclicRedundancyCheck-32C for "123456789" is 0xF89D04C3
-        let expectedCyclicRedundancyCheck: UInt32 = 0xF89D04C3
+        // Expected CyclicRedundancyCheck-32C for "123456789" is 0xE3069283
+        let expectedCyclicRedundancyCheck: UInt32 = 0xE3069283
         var cyclicRedundancyCheck = CyclicRedundancyCheck(algorithm: .crc32C)
         
         // Test one-shot computation
@@ -254,11 +254,11 @@ struct StandardCyclicRedundancyCheckTests {
         
         // Single character
         let singleCharResult = CyclicRedundancyCheck.crc32c(string: "a")
-        #expect(singleCharResult == 0xF3059051)
+        #expect(singleCharResult == 0xC1D04330)
         
         // Common test phrase
         let testPhraseResult = CyclicRedundancyCheck.crc32c(string: "The quick brown fox jumps over the lazy dog")
-        #expect(testPhraseResult == 0xEE4DC1BE)
+        #expect(testPhraseResult == 0x22620404)
     }
 }
 

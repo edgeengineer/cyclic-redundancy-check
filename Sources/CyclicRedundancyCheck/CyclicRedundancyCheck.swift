@@ -60,7 +60,7 @@ public extension StandardCyclicRedundancyCheckAlgorithm<UInt8> {
     )
     static let crc8WCDMA = StandardCyclicRedundancyCheckAlgorithm(
         configuration: CyclicRedundancyCheckConfiguration(
-            polynomial: 0x9B,
+            polynomial: 0xD9,  // Reflected/reversed polynomial for CRC8-WCDMA
             initialValue: 0x00,
             finalXORValue: 0x00,
             reflectInput: true,
@@ -73,7 +73,7 @@ public extension StandardCyclicRedundancyCheckAlgorithm<UInt8> {
 public extension StandardCyclicRedundancyCheckAlgorithm<UInt16> {
     static let crc16 = StandardCyclicRedundancyCheckAlgorithm(
         configuration: CyclicRedundancyCheckConfiguration(
-            polynomial: 0x8005,
+            polynomial: 0xA001,  // Reflected/reversed polynomial for CRC16
             initialValue: 0x0000,
             finalXORValue: 0x0000,
             reflectInput: true,
@@ -100,7 +100,7 @@ public extension StandardCyclicRedundancyCheckAlgorithm<UInt16> {
     )
     static let crc16IBM = StandardCyclicRedundancyCheckAlgorithm(
         configuration: CyclicRedundancyCheckConfiguration(
-            polynomial: 0x8005,
+            polynomial: 0xA001,  // Reflected/reversed polynomial for CRC16-IBM
             initialValue: 0x0000,
             finalXORValue: 0x0000,
             reflectInput: true,
@@ -109,7 +109,7 @@ public extension StandardCyclicRedundancyCheckAlgorithm<UInt16> {
     )
     static let crc16MODBUS = StandardCyclicRedundancyCheckAlgorithm(
         configuration: CyclicRedundancyCheckConfiguration(
-            polynomial: 0x8005,
+            polynomial: 0xA001,  // Reflected/reversed polynomial for CRC16-MODBUS
             initialValue: 0xFFFF,
             finalXORValue: 0x0000,
             reflectInput: true,
@@ -122,7 +122,7 @@ public extension StandardCyclicRedundancyCheckAlgorithm<UInt16> {
 public extension StandardCyclicRedundancyCheckAlgorithm<UInt32> {
     static let crc32 = StandardCyclicRedundancyCheckAlgorithm(
         configuration: CyclicRedundancyCheckConfiguration(
-            polynomial: 0x04C11DB7,
+            polynomial: 0xEDB88320,  // Reflected/reversed polynomial for CRC32
             initialValue: 0xFFFFFFFF,
             finalXORValue: 0xFFFFFFFF,
             reflectInput: true,
@@ -158,7 +158,7 @@ public extension StandardCyclicRedundancyCheckAlgorithm<UInt32> {
     )
     static let crc32C = StandardCyclicRedundancyCheckAlgorithm(
         configuration: CyclicRedundancyCheckConfiguration(
-            polynomial: 0x1EDC6F41,
+            polynomial: 0x82F63B78,  // Reflected/reversed polynomial for CRC32C
             initialValue: 0xFFFFFFFF,
             finalXORValue: 0xFFFFFFFF,
             reflectInput: true,
@@ -171,7 +171,7 @@ public extension StandardCyclicRedundancyCheckAlgorithm<UInt64> {
     // CRC-64 variants
     static let crc64ISO = StandardCyclicRedundancyCheckAlgorithm(
         configuration: CyclicRedundancyCheckConfiguration(
-            polynomial: 0x000000000000001B,
+            polynomial: 0xD800000000000000,  // Reflected/reversed polynomial for CRC64-ISO
             initialValue: 0xFFFFFFFFFFFFFFFF,
             finalXORValue: 0xFFFFFFFFFFFFFFFF,
             reflectInput: true,
@@ -252,7 +252,7 @@ public struct CyclicRedundancyCheck<Polynomial: FixedWidthInteger & Sendable>: S
         if Polynomial.self == UInt8.self {
             if configuration.reflectInput {
                 for byte in buffer {
-                    let index = UInt8(truncatingIfNeeded: currentValue) ^ CyclicRedundancyCheck<UInt8>.reflect(value: byte)
+                    let index = UInt8(truncatingIfNeeded: currentValue) ^ byte
                     currentValue = lookupTable[Int(index)]
                 }
             } else {
@@ -263,7 +263,7 @@ public struct CyclicRedundancyCheck<Polynomial: FixedWidthInteger & Sendable>: S
             }
         } else if Polynomial.self == UInt16.self, configuration.reflectInput {
             for byte in buffer {
-                let index = UInt8(truncatingIfNeeded: currentValue) ^ CyclicRedundancyCheck<UInt8>.reflect(value: byte)
+                let index = UInt8(truncatingIfNeeded: currentValue) ^ byte
                 currentValue = (currentValue &>> 8) ^ lookupTable[Int(index)]
             }
         } else if configuration.reflectInput {
@@ -355,7 +355,7 @@ public struct CyclicRedundancyCheck<Polynomial: FixedWidthInteger & Sendable>: S
             let data: Polynomial
             
             if configuration.reflectInput {
-                data = Polynomial(CyclicRedundancyCheck<UInt8>.reflect(value: i))
+                data = Polynomial(i)
             } else {
                 data = Polynomial(i)
             }
